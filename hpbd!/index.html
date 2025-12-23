@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nếu mày thấy...</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="rotate-lock">
+    <div class="rotate-box">
+      <div class="rotate-icon">↻</div>
+      <div class="rotate-text">
+        Vui lòng xoay ngang điện thoại<br>
+        để sử dụng trang này
+      </div>
+    </div>
+  </div>
+
+  <video class="bg" id="bg" autoplay muted loop playsinline>
+    <source src="./media/background.webm" type="video/webm" />
+  </video>
+
+  <div class="glass"></div>
+
+  <div class="glass-box" role="region" aria-label="main">
+    <h1 class="title fade-item">nếu mày thấy...</h1>
+
+    <form class="input-wrap fade-item" action="#" method="post" onsubmit="return false;">
+      <div class="input-field">
+
+        <input
+          type="text"
+          name="msg"
+          placeholder="nhập gì đó... ví dụ như Hùng đẹp trai hihi haha"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
+
+        <button class="send-btn" type="submit" aria-label="send">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M2 21l20-9L2 3v7l15 2-15 2v7z" fill="currentColor"/>
+          </svg>
+        </button>
+
+      </div>
+    </form>
+
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>

@@ -1,3 +1,11 @@
+window.addEventListener("load", () => {
+  const p = document.getElementById("preload");
+  p.classList.add("hide");
+
+  setTimeout(() => {
+    p.remove();
+  }, 3100);
+});
 
 (function(){
   const lock = document.getElementById("rotate-lock");
@@ -47,19 +55,127 @@
   });
 })();
 
-document.addEventListener("DOMContentLoaded", () => {
-  const bg = document.querySelector(".bg");
-  const glass = document.querySelector(".glass");
-  const items = document.querySelectorAll(".fade-item");
+function eraseText(el, base = 55) {
+  return new Promise(resolve => {
+    const iv = setInterval(() => {
+      el.value = el.value.slice(0, -1);
 
-  bg.classList.add("show");
-  glass.classList.add("show");
-
-  items.forEach((el, i) => {
-    setTimeout(() => {
-      el.classList.add("show");
-    }, 400 + i * 200);
+      if (!el.value) {
+        clearInterval(iv);
+        resolve();
+      }
+    }, base + Math.random() * 30);
   });
+}
+
+function typeWave(container, text, speed = 85){
+  container.innerHTML = "";
+  let i = 0;
+
+  const step = () => {
+    if (i < text.length){
+      const span = document.createElement("span");
+
+      span.innerHTML = text[i] === " " ? "&nbsp;" : text[i];
+      span.className = "strong";
+      container.appendChild(span);
+
+      const spans = container.querySelectorAll("span");
+
+      if (spans.length >= 2){
+        spans[spans.length - 2].className = "soft";
+      }
+      if (spans.length >= 3){
+        spans[spans.length - 3].className = "normal";
+      }
+
+      i++;
+      setTimeout(step, speed);
+    } else {
+      const spans = container.querySelectorAll("span");
+
+      if (spans.length >= 1){
+        setTimeout(() => {
+          spans[spans.length - 1].className = "soft";
+        }, speed);
+
+        if (spans.length >= 2){
+          setTimeout(() => {
+            spans[spans.length - 2].className = "normal";
+          }, speed * 2);
+        }
+      }
+    }
+  };
+
+  step();
+}
+
+const form = document.querySelector(".input-wrap");
+const input = document.querySelector("input[name='msg']");
+const btn = document.querySelector("button[type='submit']");
+
+const WORKER_URL = "https://hpbd.lthsiucutio.workers.dev/";
+
+let ready = false;
+let redirectUrl = "";
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (ready) {
+    window.location.href = redirectUrl;
+    return;
+  }
+
+  const key = input.value.trim().toLowerCase();
+  if (!key) return;
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key })
+    });
+
+    const text = await res.text();
+    let data;
+
+    try {
+      data = JSON.parse(text);
+    } catch {
+      console.error("Worker trả không phải JSON:", text);
+      throw new Error("INVALID_JSON");
+    }
+
+    if (!data.ok) {
+      input.value = "";
+      input.placeholder = "nhập sai code rồi!!!";
+      input.classList.add("shake");
+      setTimeout(() => input.classList.remove("shake"), 400);
+      return;
+    }
+
+    const fake = document.querySelector(".fake-text");
+    redirectUrl = data.url;
+
+    await eraseText(input);
+
+    input.value = "";
+    input.placeholder = "";
+    input.disabled = true;
+    input.blur();
+
+    typeWave(fake, data.msg);
+
+    ready = true;
+    btn.classList.add("ready");
+    btn.title = "nhấn lần nữa để mở";
+
+  } catch (err) {
+    console.error(err);
+    input.placeholder = "Er rỏ er rỏ rồi!!";
+  }
 });
 
 const v = document.getElementById("bg");

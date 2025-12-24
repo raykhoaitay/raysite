@@ -35,12 +35,9 @@ html,body{
   height:100vh;
   object-fit:cover;
   z-index:0;
-  /* no fade: visible immediately */
   opacity:1;
   transition:none;
 }
-
-/* .bg.show removed */
 
 .glass{
   position:fixed;
@@ -49,12 +46,9 @@ html,body{
   backdrop-filter:blur(2px) saturate(120%);
   -webkit-backdrop-filter:blur(2px) saturate(120%);
   z-index:0;
-  /* no fade: visible immediately */
   opacity:1;
   transition:none;
 }
-
-/* .glass.show removed */
 
 .glass-box{
   position:absolute;
@@ -168,7 +162,13 @@ html,body{
 }
 
 button.ready{
-  animation:heartbeat 1.2s infinite;
+  animation:sendHeart 1.8s infinite;
+}
+
+@keyframes sendHeart{
+  0% { box-shadow: 0 0 4px rgba(255,255,255,.15); }
+  50% { box-shadow: 0 0 12px rgba(255,255,255,.25); }
+  100% { box-shadow: 0 0 4px rgba(255,255,255,.15); }
 }
 
 .fake-text{
@@ -186,7 +186,6 @@ button.ready{
   z-index:2;
 }
 
-/* remove fade transitions for typed letters: show immediately */
 .fake-text span{
   opacity:1;
   transition:none;
@@ -212,16 +211,13 @@ button.ready{
   text-shadow:0 0 4px rgba(255,255,255,.06);
 }
 
-/* remove fade-item transitions entirely */
 .fade-item{
   opacity:1;
   transform:none;
   transition:none;
 }
 
-/* .fade-item.show removed */
-
-.fade-in{ /* removed fade animation - keep class in case used elsewhere but neutralized */
+.fade-in{
   animation:none;
 }
 
@@ -233,13 +229,6 @@ button.ready{
   0%,100%{transform:translateX(0)}
   25%{transform:translateX(-4px)}
   75%{transform:translateX(4px)}
-}
-
-@keyframes heartbeat{
-  0%{box-shadow:0 0 6px rgba(255,255,255,.4)}
-  30%{box-shadow:0 0 18px rgba(255,255,255,.9)}
-  60%{box-shadow:0 0 10px rgba(255,255,255,.6)}
-  100%{box-shadow:0 0 6px rgba(255,255,255,.4)}
 }
 
 #rotate-lock{
@@ -278,7 +267,7 @@ button.ready{
 }
 
 @media(max-width:1024px){
-  .title{font-size:9vw}
+  .title{font-size:7.5vw}
   .input-field{width:85vw}
   .input-field input{
     font-size:1.25rem;
@@ -289,7 +278,7 @@ button.ready{
 @media(max-width:640px){
   .glass-box{padding:1.25rem}
   .title{
-    font-size:15vw;
+    font-size:5vw;
     white-space:normal;
     margin-bottom:2rem;
   }

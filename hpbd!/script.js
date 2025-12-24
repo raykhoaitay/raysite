@@ -1,3 +1,4 @@
+// Preload
 window.addEventListener("load", () => {
   const p = document.getElementById("preload");
   p.classList.add("hide");
@@ -7,8 +8,10 @@ window.addEventListener("load", () => {
   }, 3100);
 });
 
+// Rotate lock + video auto-play fix
 (function(){
   const lock = document.getElementById("rotate-lock");
+  const v = document.getElementById("bg");
 
   function isMobile(){
     return window.matchMedia("(max-width: 768px)").matches;
@@ -17,15 +20,19 @@ window.addEventListener("load", () => {
   function checkOrientation(){
     if (!isMobile()){
       lock.classList.remove("active");
+      document.body.style.overflow = "";
+      if (v.paused) v.play().catch(()=>{});
       return;
     }
 
     if (window.innerHeight > window.innerWidth){
       lock.classList.add("active");
       document.body.style.overflow = "hidden";
+      v.pause();
     } else {
       lock.classList.remove("active");
       document.body.style.overflow = "";
+      if (v.paused) v.play().catch(()=>{});
     }
   }
 
@@ -34,6 +41,7 @@ window.addEventListener("load", () => {
   document.addEventListener("DOMContentLoaded", checkOrientation);
 })();
 
+// Input blur on mobile
 (function(){
   const input = document.querySelector(".input-field input");
   const btn = document.querySelector(".send-btn");
@@ -43,9 +51,7 @@ window.addEventListener("load", () => {
   }
 
   btn.addEventListener("click", () => {
-    if (isMobile()) {
-      input.blur();
-    }
+    if (isMobile()) input.blur();
   });
 
   input.addEventListener("keydown", (e) => {
@@ -55,11 +61,11 @@ window.addEventListener("load", () => {
   });
 })();
 
+// Erase and type-wave effect
 function eraseText(el, base = 55) {
   return new Promise(resolve => {
     const iv = setInterval(() => {
       el.value = el.value.slice(0, -1);
-
       if (!el.value) {
         clearInterval(iv);
         resolve();
@@ -75,42 +81,27 @@ function typeWave(container, text, speed = 85){
   const step = () => {
     if (i < text.length){
       const span = document.createElement("span");
-
       span.innerHTML = text[i] === " " ? "&nbsp;" : text[i];
       span.className = "strong";
       container.appendChild(span);
 
       const spans = container.querySelectorAll("span");
-
-      if (spans.length >= 2){
-        spans[spans.length - 2].className = "soft";
-      }
-      if (spans.length >= 3){
-        spans[spans.length - 3].className = "normal";
-      }
+      if (spans.length >= 2) spans[spans.length - 2].className = "soft";
+      if (spans.length >= 3) spans[spans.length - 3].className = "normal";
 
       i++;
       setTimeout(step, speed);
     } else {
       const spans = container.querySelectorAll("span");
-
-      if (spans.length >= 1){
-        setTimeout(() => {
-          spans[spans.length - 1].className = "soft";
-        }, speed);
-
-        if (spans.length >= 2){
-          setTimeout(() => {
-            spans[spans.length - 2].className = "normal";
-          }, speed * 2);
-        }
-      }
+      if (spans.length >= 1) setTimeout(() => spans[spans.length - 1].className = "soft", speed);
+      if (spans.length >= 2) setTimeout(() => spans[spans.length - 2].className = "normal", speed * 2);
     }
   };
 
   step();
 }
 
+// Form handling
 const form = document.querySelector(".input-wrap");
 const input = document.querySelector("input[name='msg']");
 const btn = document.querySelector("button[type='submit']");
@@ -178,5 +169,6 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+// Set video playback rate
 const v = document.getElementById("bg");
-v.playbackRate = .95;
+v.playbackRate = 0.95;
